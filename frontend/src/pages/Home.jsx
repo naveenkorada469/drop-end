@@ -1,20 +1,15 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 
-const Home = () => {
+function Home() {
   return (
-    <div className="home">
+    <>
+      <Navbar />
 
-      <h1>DROP-END</h1>
+      <h1>Drop-End</h1>
 
-      <p>Donate Blood Save Lives</p>
-
-      <Link to="/register">
-        <button>Become Donor</button>
-      </Link>
-
-    </div>
+      <h3>Save Lives By Donating Blood</h3>
+    </>
   );
-};
+}
 
 export default Home;

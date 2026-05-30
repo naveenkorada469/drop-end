@@ -1,24 +1,60 @@
 const express = require("express");
 
 const router = express.Router();
-//post API
-router.post("/", (req, res) => {
 
-res.json({
-    message:"user created successfully",
-    data:req.body
-});
-});
+const BloodRequest = require("../models/BloodRequest");
 const {
   register,
   login,
-  getDonors
+  getDonors,
 } = require("../controllers/userController");
 
 router.post("/register", register);
-
 router.post("/login", login);
+router.get("/", getDonors);
 
-router.get("/donors", getDonors);
+
+// CREATE REQUEST
+router.post("/register", async (req, res) => {
+
+  try {
+
+    const newRequest = await BloodRequest.create(req.body);
+
+    res.status(201).json({
+      message: "Blood request created successfully",
+      data: newRequest
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+});
+
+
+// GET ALL REQUESTS
+router.get("/", async (req, res) => {
+
+  try {
+
+    const requests = await BloodRequest.find();
+
+    res.json(requests);
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    });
+
+  }
+
+});
+
 
 module.exports = router;

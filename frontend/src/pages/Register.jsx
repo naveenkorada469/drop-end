@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
-const Register = () => {
+function Register() {
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     name: "",
@@ -10,97 +12,76 @@ const Register = () => {
     city: ""
   });
 
-  const handleChange = (e) => {
-
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    });
-
-  };
-
   const handleSubmit = async (e) => {
-
     e.preventDefault();
 
-    try {
+    const res = await fetch(
+      "https://drop-end.onrender.com/api/users/register",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(form)
+      }
+    );
 
-      const response = await fetch(
-        "http://localhost:5000/api/users/register",
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
-          body: JSON.stringify(form)
-        }
-      );
-
-      const data = await response.json();
-
-      console.log(data);
-
-      alert("Registered Successfully");
-
-    } catch (error) {
-
-      console.log(error);
-
+    if (res.ok) {
+      alert("Registration Successful");
+      navigate("/");
     }
   };
 
   return (
-    <div className="form-container">
-
+    <div>
       <h2>Register</h2>
 
       <form onSubmit={handleSubmit}>
-
         <input
-          type="text"
-          name="name"
-          placeholder="Enter Name"
-          onChange={handleChange}
+          placeholder="Name"
+          onChange={(e) =>
+            setForm({ ...form, name: e.target.value })
+          }
         />
 
         <input
-          type="email"
-          name="email"
-          placeholder="Enter Email"
-          onChange={handleChange}
+          placeholder="Email"
+          onChange={(e) =>
+            setForm({ ...form, email: e.target.value })
+          }
         />
 
         <input
           type="password"
-          name="password"
-          placeholder="Enter Password"
-          onChange={handleChange}
+          placeholder="Password"
+          onChange={(e) =>
+            setForm({ ...form, password: e.target.value })
+          }
         />
 
         <input
-          type="text"
-          name="bloodGroup"
           placeholder="Blood Group"
-          onChange={handleChange}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              bloodGroup: e.target.value
+            })
+          }
         />
 
         <input
-          type="text"
-          name="city"
           placeholder="City"
-          onChange={handleChange}
+          onChange={(e) =>
+            setForm({ ...form, city: e.target.value })
+          }
         />
 
-        <button type="submit">
-          Register
-        </button>
-
+        <button>Register</button>
       </form>
 
+      <Link to="/">Already have account?</Link>
     </div>
   );
-};
+}
 
 export default Register;

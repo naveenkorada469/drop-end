@@ -1,41 +1,29 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import "./App.css";
-
-import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Home from "./pages/Home";
 import Donors from "./pages/Donors";
+import BloodRequest from "./pages/BloodRequest";
+import HospitalDashboard from "./pages/HospitalDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import Profile from "./pages/Profile";
+import Contact from "./pages/Contact";
 
 function App() {
   return (
     <BrowserRouter>
-
-      <nav className="navbar">
-
-        <h2>Blood Bank</h2>
-
-        <div className="nav-links">
-          <Link to="/">Home</Link>
-          <Link to="/login">Login</Link>
-          <Link to="/register">Register</Link>
-          <Link to="/donors">Donors</Link>
-        </div>
-
-      </nav>
-
       <Routes>
-
-        <Route path="/" element={<Home />} />
-
-        <Route path="/login" element={<Login />} />
-
+        <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
+        <Route path="/home" element={<Home />} />
         <Route path="/donors" element={<Donors />} />
-
+        <Route path="/bloodrequest" element={<BloodRequest />} />
+        <Route path="/hospital" element={<HospitalDashboard />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
-
     </BrowserRouter>
   );
 }

@@ -1,54 +1,32 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import Navbar from "../components/Navbar";
 
-const Donors = () => {
-
+function Donors() {
   const [donors, setDonors] = useState([]);
 
   useEffect(() => {
-
-    fetch("http://localhost:5000/api/users/donors")
-
+    fetch(
+      "https://drop-end.onrender.com/api/users"
+    )
       .then((res) => res.json())
-
-      .then((data) => {
-        setDonors(data);
-      })
-
-      .catch((error) => {
-        console.log(error);
-      });
-
+      .then((data) => setDonors(data));
   }, []);
 
   return (
-    <div className="donor-container">
+    <>
+      <Navbar />
 
-      {
-        donors.map((donor) => (
+      <h2>Donor List</h2>
 
-          <div className="card" key={donor._id}>
-
-            <h3>{donor.name}</h3>
-
-            <p>
-              <b>Blood Group:</b> {donor.bloodGroup}
-            </p>
-
-            <p>
-              <b>City:</b> {donor.city}
-            </p>
-
-            <p>
-              <b>Email:</b> {donor.email}
-            </p>
-
-          </div>
-
-        ))
-      }
-
-    </div>
+      {donors.map((donor) => (
+        <div key={donor._id}>
+          <h3>{donor.name}</h3>
+          <p>{donor.bloodGroup}</p>
+          <p>{donor.city}</p>
+        </div>
+      ))}
+    </>
   );
-};
+}
 
 export default Donors;
