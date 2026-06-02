@@ -70,3 +70,38 @@ exports.getDonors = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, bloodGroup, city, profilePic } = req.body;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (name !== undefined) user.name = name;
+    if (email !== undefined) user.email = email;
+    if (bloodGroup !== undefined) user.bloodGroup = bloodGroup;
+    if (city !== undefined) user.city = city;
+    if (profilePic !== undefined) user.profilePic = profilePic;
+
+    await user.save();
+
+    res.json({
+      message: "Profile updated successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        bloodGroup: user.bloodGroup,
+        city: user.city,
+        role: user.role,
+        profilePic: user.profilePic
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
