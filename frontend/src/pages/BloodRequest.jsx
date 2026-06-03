@@ -83,6 +83,7 @@ function BloodRequest() {
         setErrorMsg(data.message || "Failed to submit request.");
       }
     } catch (err) {
+      console.error("Blood request submission error:", err);
       setErrorMsg("Error connecting to the server. Please try again.");
     } finally {
       setSubmitting(false);

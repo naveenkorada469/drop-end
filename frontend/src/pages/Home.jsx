@@ -1,31 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { 
   Heart, 
   Activity, 
-  Users, 
   ArrowRight, 
   Clock, 
-  CheckCircle, 
-  MapPin, 
-  Calendar 
+  CheckCircle 
 } from "lucide-react";
 
 function Home() {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
+  const [user] = useState(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   const handleRegisterDonor = () => {
     if (user) {
-      navigate("/profile");
+      navigate("/donors");
     } else {
       navigate("/register");
     }

@@ -44,6 +44,7 @@ function Login() {
         setError(data.message || "Login Failed");
       }
     } catch (err) {
+      console.error("Login error:", err);
       setError("Unable to connect to the server. Please try again.");
     } finally {
       setLoading(false);

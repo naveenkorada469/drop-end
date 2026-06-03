@@ -41,13 +41,19 @@ function Register() {
 
       const data = await res.json();
 
-      if (res.ok) {
-        alert("Registration Successful! Please log in.");
-        navigate("/");
+      if (res.ok && data.token) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem(
+          "user",
+          JSON.stringify(data.user)
+        );
+        alert("Registration Successful! Welcome to Drop-End.");
+        navigate("/donors");
       } else {
         setError(data.message || "Registration failed. Please check details.");
       }
     } catch (err) {
+      console.error("Registration error:", err);
       setError("Unable to connect to the server. Please try again.");
     } finally {
       setLoading(false);

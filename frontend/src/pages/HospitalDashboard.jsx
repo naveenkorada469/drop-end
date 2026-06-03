@@ -2,12 +2,8 @@ import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { 
   Building2, 
-  Activity, 
   PlusCircle, 
   Clock, 
-  CheckSquare, 
-  Phone, 
-  MapPin, 
   User, 
   Droplet,
   Send,
@@ -19,12 +15,24 @@ function HospitalDashboard() {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [form, setForm] = useState({
-    patientName: "",
-    bloodGroup: "",
-    hospital: "",
-    city: "",
-    contact: ""
+  const [form, setForm] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    let defaultHospital = "";
+    let defaultCity = "";
+    if (storedUser) {
+      const u = JSON.parse(storedUser);
+      if (u.role === "hospital" || u.role === "admin") {
+        defaultHospital = u.name || "";
+        defaultCity = u.city || "";
+      }
+    }
+    return {
+      patientName: "",
+      bloodGroup: "",
+      hospital: defaultHospital,
+      city: defaultCity,
+      contact: ""
+    };
   });
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
@@ -43,18 +51,6 @@ function HospitalDashboard() {
 
   useEffect(() => {
     fetchRequests();
-    // Default current hospital info if stored
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      const u = JSON.parse(storedUser);
-      if (u.role === "hospital" || u.role === "admin") {
-        setForm((prev) => ({
-          ...prev,
-          hospital: u.name || "",
-          city: u.city || ""
-        }));
-      }
-    }
   }, []);
 
   const handleUpdateStatus = async (id, status) => {
@@ -111,6 +107,7 @@ function HospitalDashboard() {
         setErrorMsg(data.message || "Failed to create request");
       }
     } catch (err) {
+      console.error("Create request error:", err);
       setErrorMsg("Could not connect to the server.");
     } finally {
       setSubmitting(false);

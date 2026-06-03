@@ -6,9 +6,7 @@ import {
   Mail, 
   Phone, 
   Droplet, 
-  Calendar, 
-  MessageSquare,
-  ChevronDown 
+  MessageSquare
 } from "lucide-react";
 import { API_BASE_URL } from "../config";
 
@@ -17,8 +15,14 @@ function Donors() {
   const [searchCity, setSearchCity] = useState("");
   const [filterBloodGroup, setFilterBloodGroup] = useState("");
   const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setCurrentUser(JSON.parse(storedUser));
+    }
+
     fetch(`${API_BASE_URL}/users`)
       .then((res) => res.json())
       .then((data) => {
@@ -96,27 +100,40 @@ function Donors() {
           </div>
         ) : filteredDonors.length > 0 ? (
           <div className="grid-listing">
-            {filteredDonors.map((donor) => (
-              <div key={donor._id} className="card donor-card">
-                <div>
-                  <div className="donor-header">
-                    {donor.profilePic ? (
-                      <img 
-                        src={donor.profilePic} 
-                        alt={donor.name} 
-                        className="donor-avatar"
-                      />
-                    ) : (
-                      <div className="donor-avatar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fee2e2', color: '#d32f2f', fontWeight: 'bold', fontSize: '18px' }}>
-                        {donor.name ? donor.name.charAt(0).toUpperCase() : 'D'}
-                      </div>
-                    )}
+            {filteredDonors.map((donor) => {
+              const isSelf = currentUser && currentUser._id === donor._id;
+              return (
+                <div 
+                  key={donor._id} 
+                  className="card donor-card"
+                  style={isSelf ? { borderColor: "var(--primary)", borderWidth: "2px", background: "rgba(211, 47, 47, 0.02)" } : {}}
+                >
+                  <div>
+                    <div className="donor-header">
+                      {donor.profilePic ? (
+                        <img 
+                          src={donor.profilePic} 
+                          alt={donor.name} 
+                          className="donor-avatar"
+                        />
+                      ) : (
+                        <div className="donor-avatar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fee2e2', color: '#d32f2f', fontWeight: 'bold', fontSize: '18px' }}>
+                          {donor.name ? donor.name.charAt(0).toUpperCase() : 'D'}
+                        </div>
+                      )}
 
-                    <div className="donor-meta">
-                      <h3 style={{ fontSize: "16px", marginBottom: "2px" }}>{donor.name}</h3>
-                      <div className="donor-blood-badge">{donor.bloodGroup}</div>
+                      <div className="donor-meta">
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <h3 style={{ fontSize: "16px", marginBottom: "2px" }}>{donor.name}</h3>
+                          {isSelf && (
+                            <span style={{ background: "var(--primary)", color: "white", fontSize: "9px", fontWeight: "bold", padding: "2px 6px", borderRadius: "4px", textTransform: "uppercase" }}>
+                              You
+                            </span>
+                          )}
+                        </div>
+                        <div className="donor-blood-badge">{donor.bloodGroup}</div>
+                      </div>
                     </div>
-                  </div>
 
                   <div className="donor-details">
                     <div className="donor-detail-item">
@@ -151,7 +168,8 @@ function Donors() {
                   </button>
                 </div>
               </div>
-            ))}
+            );
+          })}
           </div>
         ) : (
           <div style={{ textAlign: "center", padding: "60px 20px", background: "var(--bg-surface)", border: "1px solid var(--border-color)", borderRadius: "12px", color: "var(--text-muted)" }}>

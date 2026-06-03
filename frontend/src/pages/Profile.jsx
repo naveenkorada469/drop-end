@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { 
   User, 
@@ -14,33 +14,34 @@ import { API_BASE_URL } from "../config";
 
 function Profile() {
   const fileInputRef = useRef(null);
-  const [user, setUser] = useState({});
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    bloodGroup: "",
-    city: "",
-    profilePic: ""
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : {};
   });
-
-  const [loading, setLoading] = useState(false);
-  const [successMsg, setSuccessMsg] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
-
-  useEffect(() => {
+  const [formData, setFormData] = useState(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       const parsed = JSON.parse(storedUser);
-      setUser(parsed);
-      setFormData({
+      return {
         name: parsed.name || "",
         email: parsed.email || "",
         bloodGroup: parsed.bloodGroup || "",
         city: parsed.city || "",
         profilePic: parsed.profilePic || ""
-      });
+      };
     }
-  }, []);
+    return {
+      name: "",
+      email: "",
+      bloodGroup: "",
+      city: "",
+      profilePic: ""
+    };
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -105,6 +106,7 @@ function Profile() {
         setErrorMsg(data.message || "Failed to update profile");
       }
     } catch (err) {
+      console.error("Profile save error: ", err);
       setErrorMsg("Could not save profile changes. Please try again.");
     } finally {
       setLoading(false);

@@ -3,14 +3,7 @@ import Navbar from "../components/Navbar";
 import { 
   Users, 
   FileText, 
-  CheckCircle, 
-  AlertTriangle, 
-  MapPin, 
-  Settings, 
-  TrendingUp, 
-  Trash2,
-  Check,
-  AlertOctagon
+  Check
 } from "lucide-react";
 import { API_BASE_URL } from "../config";
 
@@ -71,7 +64,6 @@ function AdminDashboard() {
   // Helper stats
   const donorsCount = users.filter(u => u.role !== "admin").length;
   const urgentCount = requests.filter(r => r.status === "Urgent").length;
-  const pendingCount = requests.filter(r => !r.status || r.status === "Pending").length;
   const completedCount = requests.filter(r => r.status === "Completed").length;
 
   return (
